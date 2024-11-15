@@ -1,1 +1,1 @@
-https://github.com/puria-79/Github-Random-Repository-Searcher
+https://roadmap.sh/projects/github-random-repo
