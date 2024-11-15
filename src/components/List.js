@@ -1,27 +1,53 @@
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
-import { useState } from "react";
-const List = ({setOption, setActive, languages}) => {
-  let items = languages.map((item) => item.title)
-  const [search, setSearch] = useState('')
+import { useEffect, useRef, useState } from "react";
+const List = ({setOption, setActive, languages, active}) => {
+  const items = languages.map((item) => item.title)
+  const [language, setLanguage] = useState(items)
+  const inputField = useRef()
+  const inputFieldReset = () => {
+    if (inputField.current.value !== ''){
+      inputField.current.value = ''
+      setLanguage(items)
+    }
+  }
   const handleClick = (e) => {
     setOption(e.target.value)
     setActive(false)
+    inputFieldReset()
   }
   const handleChange = (e) => {
-    items = items.filter(language => language.toLowerCase().includes(e.target.value.toLowerCase()))
+    setLanguage(items.filter(lan => lan.toLowerCase().includes(e.target.value.toLowerCase())))
   }
+  const handleClickAway = (e) => {
+    if(!e.target.matches('#btn')){
+      setActive(false)
+      inputFieldReset()
+    }
+  }
+  useEffect(() => {
+    window.addEventListener('click', handleClickAway)
+    return () => {
+      window.removeEventListener('click', handleClickAway)
+    }
+  }, [active])
   return (
-    <div className="absolute z-10 min-w-[200px] max-h-[200px] bg-white shadow-xl border-gray-400 border-2 rounded-2xl overflow-hidden">
-      <input className="w-full" id="btn" type="search" onChange={handleChange}/>
+    <div className="absolute z-10 w-[200px] min-h-[200px] bg-white shadow-xl border-gray-400 border-2 rounded-2xl overflow-hidden">
+      <input className="w-full outline-none px-2 py-1 border-b-slate-400 border-b-[2px]"
+        id="btn" 
+        type="text" 
+        onChange={handleChange}
+        autoComplete='off'
+        ref={inputField}
+      />
       <OverlayScrollbarsComponent
         options={{scrollbars: {theme: 'os-theme-dark'}}}
       >
         <div className="flex flex-col max-h-[190px]">
-          {items.map((item, i) => (
+          {language.map((item, i) => (
             <button
             id="btn"
             key={i} 
-            className={`${items.length - 1 === i ? 'border-b-0' : 'border-b-2'} hover:bg-blue-500 hover:text-slate-50 px-2 py-1`} 
+            className={`${language.length - 1 === i ? 'border-b-0' : 'border-b-2'} hover:bg-blue-500 hover:text-slate-50 px-2 py-1`} 
             value={item}
             onClick={handleClick}
             >
