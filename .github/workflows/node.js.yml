@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-puria
+    runs-on: self-hosted
 
     steps:
     - run: npm run start
